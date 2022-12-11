@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+
+<body>
+
+    <div class="p-4" id="app">
+
+        <table id="myTable" class="table table-bordered table-primary table-striped">
+
+            <thead>
+
+                <tr>
+                    <th>City</th>
+                    <th>Min Temp</th>
+                    <th>Max Temp</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr v-for="(forecast,forecast.latitude)">
+                    <td v-text=`${forecast.timezone}`></td>
+                    <td v-text=`${forecast.daily.temperature_2m_min}`></td>
+                    <td v-text=`${forecast.daily.temperature_2m_max}`></td>
+                    <td><input type="button" value="Delete" onclick="deleteRow(this)"></td>
+                </tr>
+
+
+                <tr v-for="(forecastKyiv,forecastKyiv.latitude)">
+                    <td>Kyiv</td>
+                    <td v-text=`${forecastKyiv.daily.temperature_2m_min}`></td>
+                    <td v-text=`${forecastKyiv.daily.temperature_2m_max}`></td>
+                    <td><input type="button" value="Delete" onclick="deleteRow(this)"></td>
+                </tr>
+
+                <tr v-for="(forecastTokyo,forecastTokyo.latitude)">
+                    <td>Tokyo</td>
+                    <td v-text=`${forecastTokyo.daily.temperature_2m_min}`></td>
+                    <td v-text=`${forecastTokyo.daily.temperature_2m_max}`></td>
+                    <td><input type="button" value="Delete" onclick="deleteRow(this)"></td>
+                </tr>
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+
+        function deleteRow(r) {
+            var i = r.parentNode.parentNode.rowIndex;
+            document.getElementById("myTable").deleteRow(i);
+        }
+
+    </script>
+
+</body>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+
+
+
+<script>
+
+
+    new Vue({
+        el: "#app",
+        data: {
+            forecast: [],
+            forecastKyiv: [],
+            forecastTokyo: []
+        },
+
+        methods: {
+
+
+            getData() {
+                let URL = "https://api.open-meteo.com/v1/forecast?latitude=39.89&longitude=-83.45&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FLondon&start_date=2022-12-10&end_date=2022-12-10"
+                axios.get(URL)
+                    .then(res => {
+                        this.forecast = res.data
+                        console.log(res.data)
+                    })
+
+
+                let URL1 = "https://api.open-meteo.com/v1/forecast?latitude=50.45&longitude=30.52&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&start_date=2022-12-10&end_date=2022-12-10"
+                axios.get(URL1)
+                    .then(res => {
+                        this.forecastKyiv = res.data
+                        console.log(res.data)
+                    })
+
+                let URL2 = "https://api.open-meteo.com/v1/forecast?latitude=35.69&longitude=139.69&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=2022-12-11&end_date=2022-12-11"
+                axios.get(URL2)
+                    .then(res => {
+                        this.forecastTokyo = res.data
+                        console.log(res.data)
+                    })
+            }
+
+
+
+
+        },
+
+        mounted() {
+            this.getData();
+        },
+
+
+
+
+    })
+</script>
+
+</html>
